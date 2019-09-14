@@ -1,0 +1,15 @@
+# these two functions return what is configred on the interfaces for primary IPv4 and IPv6 addresses
+alias ifipv4="ifconfig | grep '^[[:space:]]*inet[[:space:]]' | grep -v 'inet 127.0.0.' | awk '{ print \$2 }'"
+#alias ifipv6="ifconfig | grep '^[[:space:]]*inet[[:space:]]' | grep -v 'inet 127.0.0.' | awk '{ print \$2 }'"
+
+# this function bypasses NAT and figures out the actual ip we are seen as when we hit the internet
+function homesfip 
+{
+    _host=synfin.homeunix.net # we try looking this up as a secondary stop-gap if ipecho.net is down...
+    #ip=$(curl http://ipecho.net/plain 2> /dev/null)
+    # check to see if its a valid IP address ...
+    if [[ ! "${ip}" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] ; then
+       ip=$(TRIEDHOST=1 /usr/bin/host "${_host}" | { read a b c d ; printf "%s\n" $d;  })
+    fi
+    echo $ip
+}

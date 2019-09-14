@@ -1,0 +1,118 @@
+export LESS='-R'
+
+
+_CYAN="\[\033[0;36m\]"
+_RED="\[\033[0;31m\]"
+_GREEN="\[\033[0;32m\]"
+_WHITE="\[\033[0;39m\]"
+_GREY="\[\033[0m\]"
+_BOLD="\[\e[28;1m\]"
+
+
+export _CYAN _RED _GREEN _WHITE _GREY _BOLD
+
+_color_scheme1() {
+
+    export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode - red
+    export LESS_TERMCAP_md=$(printf '\e[01;35m') # enter double-bright mode - bold, magenta
+    export LESS_TERMCAP_me=$(printf '\e[0m') # turn off all appearance modes (mb, md, so, us)
+    export LESS_TERMCAP_se=$(printf '\e[0m') # leave standout mode
+    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode - yellow
+    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+    export LESS_TERMCAP_us=$(printf '\e[04;36m') # enter underline mode - cyan
+
+}
+
+_color_scheme2() {
+
+    export LESS_TERMCAP_mb=$(printf "\e[1;31m")
+    export LESS_TERMCAP_md=$(printf "\e[1;31m")
+    export LESS_TERMCAP_me=$(printf "\e[0m")
+    export LESS_TERMCAP_se=$(printf "\e[0m")
+    export LESS_TERMCAP_so=$(printf "\e[1;44;33m")
+    export LESS_TERMCAP_ue=$(printf "\e[0m")
+    export LESS_TERMCAP_us=$(printf "\e[1;32m")
+
+}
+
+_color_scheme3() {
+
+    export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode
+    export LESS_TERMCAP_md=$(printf '\e[01;38;5;75m') # enter double-bright mode
+    export LESS_TERMCAP_me=$(printf '\e[0m') # turn off all appearance modes (mb, md, so, us)
+    export LESS_TERMCAP_se=$(printf '\e[0m') # leave standout mode
+    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode
+    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+    export LESS_TERMCAP_us=$(printf '\e[04;38;5;200m') # enter underline mode
+
+    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode - yellow
+    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+    export LESS_TERMCAP_us=$(printf '\e[04;33m') # enter underline mode - cyan
+#    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode - yellow
+#    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+#    export LESS_TERMCAP_us=$(printf '\e[04;36m') # enter underline mode - cyan
+}
+
+_color_scheme4() {
+
+    export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode
+    export LESS_TERMCAP_md=$(printf '\e[01;38;5;75m') # enter double-bright mode
+    export LESS_TERMCAP_me=$(printf '\e[0m') # turn off all appearance modes (mb, md, so, us)
+    export LESS_TERMCAP_se=$(printf '\e[0m') # leave standout mode
+    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode - yellow
+    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+    export LESS_TERMCAP_us=$(printf '\e[04;33m') # enter underline mode - cyan
+}
+
+_color_scheme5() {
+    export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
+    export LESS_TERMCAP_md=$(tput bold; tput setaf 45) # cyan
+    export LESS_TERMCAP_me=$(tput sgr0)
+    export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4) # yellow on blue
+    export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
+    export LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 190) # white
+    export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+    export LESS_TERMCAP_mr=$(tput rev)
+    export LESS_TERMCAP_mh=$(tput dim)
+    export LESS_TERMCAP_ZN=$(tput ssubm)
+    export LESS_TERMCAP_ZV=$(tput rsubm)
+    export LESS_TERMCAP_ZO=$(tput ssupm)
+    export LESS_TERMCAP_ZW=$(tput rsupm)
+}
+
+_color_scheme6() {
+
+#    export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode - red
+    export LESS_TERMCAP_mb=$(tput bold; tput setaf 221)
+    export LESS_TERMCAP_me=$(printf '\e[0m') # turn off all appearance modes (mb, md, so, us)
+    export LESS_TERMCAP_se=$(printf '\e[0m') # leave standout mode
+#    export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode - yellow
+    export LESS_TERMCAP_so=$(tput bold; tput setaf 121) # enter standout mode - yellow
+    export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
+    export LESS_TERMCAP_us=$(printf '\e[04;36m') # enter underline mode - cyan
+
+    export LESS_TERMCAP_md=$(tput bold; tput setaf 229)
+
+    export LESS_TERMCAP_mr=$(tput rev)
+    export LESS_TERMCAP_mh=$(tput dim)
+    export LESS_TERMCAP_ZN=$(tput ssubm)
+    export LESS_TERMCAP_ZV=$(tput rsubm)
+    export LESS_TERMCAP_ZO=$(tput ssupm)
+    export LESS_TERMCAP_ZW=$(tput rsupm)
+
+}
+
+
+# default to scheme4, right now
+_color_scheme6
+
+colorz () 
+{ 
+    for x in {1..256};
+    do
+        export LESS_TERMCAP_md=$(tput bold; tput setaf $x) && echo -n "$LESS_TERMCAP_md Color  $x - test  ";
+        [[ $((x % 5)) == "0" ]] && echo;
+    done
+}
+
+# vim:ts=4:sts=4:et:ai:syntax=sh:ft=sh

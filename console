@@ -1,0 +1,11 @@
+#
+#if [[ "$TERM" == "linux" ]] ; then
+#    PS1="\e[32m\]"
+#    PS1="${PS1}\u@\h:\[\e[36m\]\w\[\e[1m\]\\$ \[\e[0m\]"
+#fi
+#
+#CFONT="Lat15"
+#
+#if [ -z "$DISPLAY" ] ; then
+#    /bin/setfont "Lat15-VGA8"
+#fi

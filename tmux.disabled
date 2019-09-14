@@ -1,0 +1,28 @@
+alias tlist='tmux list-session'
+
+
+
+function tatt()
+{
+#    _tmux=$(which tmux)
+    _tmux=/usr/local/bin/tmux
+    s=$1
+
+    if [ -z "${_tmux}" ]; then
+        echo "tmux not found"
+        return 1
+    fi
+
+    if [ -z "$s" ] ; then
+        echo "Usage: tatt session-name"
+        return 1
+    fi
+
+    sessions=$(tmux list-sessions | awk -F: '{ print $1 }')
+    if echo "$sessions" | egrep "^${s}$|^${s}\W|\W${s}\W|${s}$" > /dev/null 2>&1 ; then
+        ${_tmux} -u -f ~/.tmux.conf attach-session -t $s
+    else
+        ${_tmux} -u -f ~/.tmux.conf new-session -s $s
+    fi
+
+}

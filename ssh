@@ -1,0 +1,5 @@
+alias synfin='ssh -X jnn@synfin.org'
+alias wintermute='ssh -X jnn@wintermute.synfin.org'
+alias home='ssh jnn@localhost'
+alias localhost='ssh jnn@localhost'
+alias ronin='ssh jnn@ronin'

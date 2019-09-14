@@ -1,0 +1,41 @@
+# ALL the OSX man directories...
+
+MANPATH=/usr/share/man:/usr/local/share/man:/usr/local/man:/Library/Developer/CommandLineTools/usr/share/man:/usr/local/MacGPG2/share/man:/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home/man:/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/man:/System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/Documentation/man
+
+export MANPATH
+function _hman()
+{
+    manpage=$*
+    if [ -z "$manpage" ] ; then
+        echo "Usage: hman man-page"
+        echo " - requires an argument, man page to view!"
+        return 1
+    fi
+    export LESS_TERMCAP_mb=$(printf "\e[1;31m") LESS_TERMCAP_md=$(printf "\e[1;31m") LESS_TERMCAP_me=$(printf "\e[0m") LESS_TERMCAP_se=$(printf "\e[0m") LESS_TERMCAP_so=$(printf "\e[1;44;33m") LESS_TERMCAP_ue=$(printf "\e[0m") LESS_TERMCAP_us=$(printf "\e[1;32m") 
+    PAGER="col -b | open -a /Applications/Google\ Chrome.app -f" man $manpage
+    return $?
+}
+
+function hman()
+{
+    manpage=$*
+    echo "man $manpage.."
+    if [ -z "$manpage" ] ; then
+        echo "Usage: hman man-page"
+        echo " - requires an argument, man page to view!"
+        return 1
+    fi
+#    export LESS_TERMCAP_mb=$(printf "\e[1;31m") LESS_TERMCAP_md=$(printf "\e[1;31m") LESS_TERMCAP_me=$(printf "\e[0m") LESS_TERMCAP_se=$(printf "\e[0m") LESS_TERMCAP_so=$(printf "\e[1;44;33m") LESS_TERMCAP_ue=$(printf "\e[0m") LESS_TERMCAP_us=$(printf "\e[1;32m") 
+    man $manpage | /usr/local/bin/man2html  > /tmp/.$manpage.$$.html
+    open -a /Applications/Google\ Chrome.app "file:///tmp/.$manpage.$$.html"
+    ( sleep 10 ; rm -f "/tmp/.$manpage.$$.html" ) &
+    return $?
+}
+
+## see ~/sh/colors - no need for below. 
+#man ()
+#{
+#    env LESS_TERMCAP_mb=$(printf "\e[1;31m") LESS_TERMCAP_md=$(printf "\e[1;31m") LESS_TERMCAP_me=$(printf "\e[0m") LESS_TERMCAP_se=$(printf "\e[0m") LESS_TERMCAP_so=$(printf "\e[1;44;33m") LESS_TERMCAP_ue=$(printf "\e[0m") LESS_TERMCAP_us=$(printf "\e[1;32m") /usr/bin/man "$@"
+#}
+
+function sman() { open -a /Applications/Safari.app man://$@ ; }

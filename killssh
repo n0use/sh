@@ -1,0 +1,1 @@
+alias killssh='ssh-keygen -f "/Users/jnn/.ssh/known_hosts" -R $1'

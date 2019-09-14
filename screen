@@ -1,0 +1,21 @@
+function rresume
+{
+    if [ -z "$1" ] ; then
+        echo "rresume - function to resume as root (_r_resume) a screen session.  will detach if necessary"
+        echo
+        echo "Usage: rresume session-name"
+        return 1
+    fi
+    sudo screen -DR "$1" 
+}
+
+function resume
+{
+    if [ -z "$1" ] ; then
+        echo "resume - function to resume a screen session.  will detach if necessary"
+        echo
+        echo "Usage: resume session-name"
+        return 1
+    fi
+    screen -DR "$1" 
+}

@@ -1,0 +1,2 @@
+alias win2kvm='rdesktop -u Administrator -p pe33r1++ -g 1280x800 xen1dom1'
+alias engvc1mia='rdesktop -u jnnewman -d CORP -g 1280x800 engvc1mia'

@@ -1,0 +1,1 @@
+alias nmap-ssl-ciphers='nmap --script ssl-enum-ciphers'

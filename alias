@@ -1,0 +1,23 @@
+#alias j=jobs
+
+alias l.='ls -d .* -G'
+alias la='ls -latr -G'
+alias ll='ls -ltr -G'
+alias ls='ls -G'
+alias lr='ls -G -ltrR'
+
+alias pps='ps axwo ppid,pid,tty,user,group,%cpu,%mem,args'
+alias lhost='[ -n "$1" ] && grep $1 /etc/hosts || echo Usage: lhost host'
+alias ipmi='/home/jnnewman/supermicro/IPMIView20.sh'
+
+alias kchrome='pkill chromium ; pkill chromium ; sleep 1 ; pkill -9 chromium'
+alias pchrome='pgrep chromium'
+
+alias kfox='pkill firefox ; pkill firefox ; sleep 1 ; pkill -9 firefox'
+alias pfox='ps auxw | grep firefox'
+
+export EDITOR=vim
+
+export PAGER=less
+
+alias j='jobs'

@@ -1,0 +1,28 @@
+function kernel-build
+{
+    arch=$1
+    if [[ "$arch" == "x86" || "$arch" == "i386" || "$arch" == "32-bit" ]] ; then
+        flags="ARCH=i386"
+    fi
+    echo "+make ${flags} bzImage modules"
+    make ${flags} bzImage modules
+}
+
+function kernel-install
+{
+    target=$1
+    arch=$2
+
+    if [ -z "$target" ] ; then 
+        echo "usage: kernel-install path/to/installation [arch]"
+        echo "  arch is optional flag, i386 is an example"
+    fi
+
+
+    if [[ "$arch" == "x86" || "$arch" == "i386" || "$arch" == "32-bit" ]] ; then
+        flags="ARCH=i386"
+    fi
+
+    echo "+make ${flags} INSTALL_PATH=${target}/boot INSTALL_MOD_PATH=${target} install modules_install"
+    make INSTALL_PATH=${target}/boot INSTALL_MOD_PATH=${target} install modules_install
+}

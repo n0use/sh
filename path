@@ -1,0 +1,6 @@
+##export PATH="/usr/local/bin:/usr/local/sbin:~jnn/bin:/$PATH:/sbin:/usr/sbin"
+##export PATH="${PATH}:${HOME}/android-sdk/platform-tools/:${HOME}/android-sdk/build-tools/android-4.3/"
+
+export PATH="/usr/local/bin:/usr/local/sbin:/bin:/usr/bin:/sbin:/usr/sbin:${HOME}/bin:/opt/X11/bin:/Users/jnn/android-sdk/platform-tools:/Users/jnn/android-sdk/build-tools/android-4.3:/Users/jnn/scripts"
+
+# /usr/local/MacGPG2/bin

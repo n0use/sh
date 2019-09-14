@@ -1,0 +1,13 @@
+google () 
+{ 
+    browser=$(cat ${HOME}/etc/browser.txt)
+
+    open "${browser}" "http://google.com/search?q=$*"
+}
+
+wiki () 
+{ 
+    browser=$(cat ${HOME}/etc/browser.txt)
+
+    open "${browser}" "http://wikipedia.org/wiki/$*"
+}

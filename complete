@@ -1,0 +1,3 @@
+# disable all the ubuntu bash completion crap, for me anyway
+
+complete -r 

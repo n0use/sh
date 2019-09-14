@@ -1,0 +1,27 @@
+# usage: load_server server_name [user_name]
+#
+# loads a server with everything from ~/unix.skel/ into the home directory of user_name
+# user_name defaults to the current running user if not provided
+
+function load_server
+{
+	verbose=0
+	if [[ "$1" == "-v" ]] ; then
+		verbose=1
+		shift
+	fi
+	server=$1
+	user=$2
+	test -z "$server" && { echo "Usage: load_server server [user]"; return 1; }
+	if [ -z "$user" ] ; then
+		user=$(whoami)
+		test -z "$user" && user=$(who am i | awk '{ print $1 }')
+	fi
+	if [ -z "$user" ] ; then
+		echo "Username not provided, could not be guessed (something funky with your who/whoami commands dude.."
+		return 1
+	fi
+	[[ "$verbose" == 1 ]] && echo "running load_user $server $user"
+	[[ "$verbose" == 1 ]] && echo "+ rsync -e ssh -avz ~/unix.skel/ ${user}@${server}:~${user}/"
+	rsync -e ssh -avz ~/unix.skel/ ${user}@${server}:~${user}/
+}

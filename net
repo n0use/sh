@@ -1,0 +1,30 @@
+function newhost() {
+    host=$1
+    ipaddr=$2
+    if [ -z "$host" ] || [ -z "$ipaddr" ] ; then
+        echo "Usage: newhost hostname ipaddr"
+        return 1
+    fi
+    if [ -f /tmp/newhost.lck ] ; then
+        echo "There is currently a lock on newhost - "
+        echo "Check that everything is OK, remove /tmp/newhost.lck, and try again."
+        return 1
+    fi
+    touch /tmp/newhost.lck
+ 
+    type=""
+    if egrep "^[0-9\.]*[[:space:]]*${1}" /etc/hosts > /dev/null 2>&1 ; then 
+        type="Updated"
+        sudo sed -i "s/^.*[[:space:]]${host}/${ipaddr}   ${host}/" /etc/hosts
+    else
+        type="New"
+        cp /etc/hosts /tmp/hosts.$$
+        echo "$ipaddr    $host"  >> /tmp/hosts.$$
+        sudo mv -f /tmp/hosts.$$ /etc/hosts
+    fi
+    echo "${type} entry: "
+    grep -n "[[:space:]]${host}" /etc/hosts
+    rm /tmp/newhost.lck
+    return 0
+}
+

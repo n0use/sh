@@ -1,0 +1,3 @@
+alias phonels='adb devices'
+alias phoneusb='adb shell $*'
+alias phone='ssh root@synstorm.net -p 2323'
