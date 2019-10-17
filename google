@@ -1,0 +1,8 @@
+export GOPATH=$HOME/src/go
+export PATH=$PATH:$GOPATH/bin
+
+# following variables used by the google drive client 'drive' - 
+# not totally working on freebsd (for me) ATM - jnn 9/2/15
+##export GOOGLE_API_CLIENT_ID=<your_client_id>
+##export GOOGLE_API_CLIENT_SECRET=<your_secret>
+alias drive='drive-google'

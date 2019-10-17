@@ -1,0 +1,2 @@
+alias ppgrep='ps auxww | grep $*'
+alias contents='pkg query '\''%Fp'\'''

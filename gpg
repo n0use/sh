@@ -1,0 +1,76 @@
+
+pass () 
+{ 
+    user=$1;
+    if [ -z "$1" ] ; then
+        for f in ${HOME}/etc/pass/password-* ; do
+            p=$(basename ${f})
+            echo ${p} | sed 's/^password-\(.*\).txt.*$/\1/'
+        done
+        return 0
+    fi
+    pass_file="${HOME}/etc/pass/password-${user}.txt"
+    if [ -f "${pass_file}" ] ; then
+        echo "Warning: you have an UNENCRYPTED PASSWORD FILE (${pass_file}).. you should remove this file for security reasons."
+        cat "${pass_file}" 
+        return 0
+    fi
+    if [ ! -f ${HOME}/etc/pass/password-${user}.txt.gpg ]; then
+        echo "No password for \"${user}\" stored.";
+        possibles=$(ls ${HOME}/etc/pass/password-* | sed "s#${HOME}/etc/pass/password-##" | sed 's/.txt.gpg$//' | grep -i ${user})
+        if [ -n "${possibles}" ] ; then
+            echo "Did you mean one of these - "
+#            for p in $(echo ${possibles} | sed 's/ /\n/g' | | sed 's/.txt.gpg$//') ; do
+            for p in ${possibles} ; do
+                echo "  ${p}"
+            done
+        fi
+        return 1;
+    fi;
+#    gpg -d ${HOME}/etc/pass/password-${user}.txt.gpg > /tmp/p.$$ && clear && cat /tmp/p.$$ && rm -f /tmp/p.$$
+    gpg -d ${HOME}/etc/pass/password-${user}.txt.gpg > /tmp/p.$$ && cat /tmp/p.$$ && rm -f /tmp/p.$$
+}
+
+
+newpass ()
+{
+    replace=0
+    if [[ "$1" == "-r" ]] ; then 
+        replace=1
+        shift
+    fi
+    pass=$1
+    pass_file="${HOME}/etc/pass/password-${pass}.txt"
+
+    if [ -f "${pass_file}" ] || [ -f "${pass_file}.gpg" ] ; then
+        if [[ "${replace}" == 0 ]] ; then
+            echo "There is already a password stored for this - remove the old one and try again."
+            return 1
+        fi
+        echo -n "Are you sure you want to REPLACE the information you already have stored for '$pass'? [Ny] "
+        read yesno
+        [[ yesno =~ [yY] ]] || return 1
+        rm -f "${pass_file}" "${pass_file}.gpg"
+    fi
+    echo "Enter the information to store in the encrypted file for \"${pass}\""
+    cnt=0
+    input=()
+    while read line ; do
+        input[${cnt}]="$line"
+        cnt=$(($cnt + 1))
+    done
+    for ((i=0;i<${cnt};i++)) do
+        echo "${input[${i}]}" >> "${pass_file}"
+    done
+    gpg -r jnn@synfin.org -e "${pass_file}" 
+    rm "${pass_file}"
+}
+
+
+
+# DISABLED TESTING GPGTools for OSX
+
+#if [ -z $(pgrep gpg-agent) ] ; then 
+#    gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info" > ~/sh/gpg-agent.rc; 
+#    . ~/sh/gpg-agent.rc
+#fi

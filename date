@@ -1,0 +1,1 @@
+alias pdate='date '\''+%m.%d.%Y'\'''

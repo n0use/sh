@@ -1,0 +1,23 @@
+function backup()
+{
+    if [ -z "$1" ] ; then
+        echo "Usage: backup file1 [file2] ... [fileX]"
+    fi
+    date=$(date '+%m-%d-%Y')
+    for file in $* ; do
+        if [ ! -f "$file" ] ; then
+            echo "error: $file not found, skipping"
+        else
+            file2="${file}.backup-${date}"
+            echo "+ cp '${file}' '${file2}'"
+            cp "${file}" "${file2}"
+        fi
+    done
+}
+
+function backup_dir()
+{
+    date_str=$(date '+%m-%d-%Y')
+    mkdir "BAK.$date_str"
+    cp -vp * "BAK.$date_str/"
+}

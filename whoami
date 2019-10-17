@@ -1,0 +1,1 @@
+alias whoamip='host $(who am i | awk "{ print \$6 }" | tr -d ")(") | sed "s/.*has address //"'

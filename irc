@@ -1,0 +1,6 @@
+IRCNICK=nixen
+IRCNAME="Prezident Milh0use J. Nixen" 
+IRCUSER=nixen
+#IRCHOST - hostname (you will probably never use this one)
+
+export IRCNICK IRCNAME IRCUSER

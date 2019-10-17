@@ -1,0 +1,1 @@
+declare -x NNTPSERVER="news.mixmin.net"

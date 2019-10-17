@@ -1,0 +1,10 @@
+function w2()
+{
+    dedup="${HOME}/bin/dedup.pl"
+    /usr/bin/w | awk '{ u=$1; tty=$2; src=$3; d1=$4; d2=$5; cmd=""; \
+            if (src ~ /^tmux/)  
+                src = "tmux"; 
+            for ( i = 6; i <= NF ; i++ )   
+                cmd = sprintf("%s %s", cmd, $i);  
+            printf("%s\t%s\t%s\t%s\n", u, src, d1, cmd) ;  }' | ${dedup} -c
+}

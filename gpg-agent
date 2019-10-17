@@ -1,0 +1,12 @@
+
+# check and see if we have a gpg-agent running, if not start her up
+if [ -z "$(ps -U $USER | awk '$5 ~ /^gpg-agent/ { print $1 ; }')" ] ; then
+    DISPLAY="" gpg-agent --daemon --enable-ssh-support --homedir ~/.gnupg/ --sh > ~/sh/gpg-agent.rc
+    source ~/sh/gpg-agent.rc
+    GPG_TTY=$(tty)
+    export GPG_TTY
+fi
+if [ -n "${GPG_TTY}" ] ; then
+    GPG_TTY=$(tty)
+    export GPG_TTY
+fi

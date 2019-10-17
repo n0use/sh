@@ -1,0 +1,12 @@
+buildpkg () 
+{ 
+    if [ -z "$1" ]; then
+        echo "Usage: buildpkg pkg";
+        return 1;
+    fi;
+    pkg=$1
+    version=$(pkg query '%v' $pkg)
+    pkg_file="/var/pkgs/$pkg-$version.tgz";
+    echo "Creating package in $pkg_file..";
+    tar zvcf $pkg_file $(pkg query '%Fp' $pkg)
+}

@@ -1,0 +1,10 @@
+function regex {
+    re=$1
+    idx=${2:-'0'}
+    if [ -z "$re" ] ; then
+        echo "Usage: regex pattern [idx [file1 ... [fileN]]]"
+        return 0
+    fi
+    shift; shift;
+    gawk 'match($0,/'$re'/, matches) {printf("%s: %s\n", FILENAME, matches['$idx'])}' $*
+}

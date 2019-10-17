@@ -1,0 +1,45 @@
+
+function killspecials()
+{
+    if [ -n "$*" ] ; then
+        files=$*
+    else
+        files=*
+    fi
+
+    if [ -z "$files" ] ; then
+        echo "No files found in current directory or specified on command line."
+        return 1
+    fi
+
+    for f in $files ; do 
+        n=$(echo "${f}" | sed 's/[)(\\"]//g')
+        n=$(echo "${n}" | sed 's/\[//g' | sed 's/\]//g')
+        n=$(echo "${n}" | sed 's/__*/_/g')
+        echo "--"
+        echo "n = [$n]\n";
+        echo "f = [$f]\n";
+        [[ "${n}" != "${f}" ]] && mv "${f}" "${n}"
+    done
+}
+
+function killspaces()
+{
+    if [ -n "$*" ] ; then
+        files=$*
+    else
+        files=*
+    fi
+
+    if [ -z "$files" ] ; then
+        echo "No files found in current directory or specified on command line."
+        return 1
+    fi
+
+    for f in $files ; do 
+        n=$(echo "${f}" | sed 's/ /_/g')
+        [[ "${n}" != "${f}" ]] && mv "${f}" "${n}"
+    done
+}
+
+

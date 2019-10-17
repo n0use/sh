@@ -1,0 +1,3 @@
+function ps_irssi() {
+    ps auxww | grep $(pgrep irssi | awk '{ for (i=1; i <= NF; i++ ) { printf("-e %s ", $i); } }')
+}

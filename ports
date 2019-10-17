@@ -1,0 +1,66 @@
+function portmake()
+{
+    port_base="/usr/ports"
+    dir=$(basename $(pwd))
+    install="install"
+
+    if [[ "$1" == "-r" ]] ; then
+        install="reinstall"
+        shift
+    fi
+    if [ -n "$1" ] ; then
+        port=$1
+        if [[ "$dir" != "$port" ]] ; then
+            echo "You are in the wrong directory - '" $(pwd) "' for the port '$port'..."
+            echo "Searching for '$port' in $port_base"
+            port_dir=$(ls -d $port_base/*/$port)
+            if [ -z "$port_dir" ] || [ ! -d "$port_dir" ]  ; then
+                echo "Couldnt find port '$port' in '$port_base..'"
+                return 1
+            else
+                cd "$port_dir"
+                echo "Found port, changed directory to $port_dir.."
+            fi
+        fi
+    else
+        port="$dir"
+    fi
+    date="$(date '+%m-%d-%Y')"
+    build_log="${HOME}/var/portlogs/$port-build-$date.txt"
+    install_log="${HOME}/var/portlogs/$port-install-$date.txt"
+    echo "Configuring port '$port'.."
+    make configure
+    echo "Building port '$port'.. saving output to $build_log.."
+    make | tee "$build_log" 2>&1
+    echo "Installing port '$port'... saving output to $install_log.."
+    make $install | tee "$install_log" 2>&1
+}
+
+function cdport()
+{
+    port_base="/usr/ports"
+    regex="[[:space:]]"
+    port=$1
+
+    if [ -z "$port" ] ; then
+        echo "Usage: cdport port-name"
+        return 1
+    fi
+    echo "Searching for '$port' in $port_base"
+    port_dir=$(ls -d $port_base/*/$port)
+#    if [ -z "$port_dir" ] || [ ! -d "$port_dir" ]  ; then
+    if [ -z "$port_dir" ] ; then
+        echo "Couldnt find port '$port' in '$port_base..'"
+        return 1
+    else
+        echo "Matches are: [$port_dir].."
+        for p in $port_dir ; do
+            echo "Found port, changed directory to $p.."
+            cd "$p"
+        done
+    fi
+}
+
+alias pal='pkg audit | less'
+
+# vim:ft=sh:ts=4:sts=4:et:ai:

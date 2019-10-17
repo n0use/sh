@@ -1,0 +1,24 @@
+unset pathtable pathtable_sorted n idx prepath
+
+declare prepath=""
+
+declare -A pathtable
+declare -a pathtable_sorted
+declare -i n=1
+declare -i idx
+
+for p in $(echo $PATH | sed 's/:/ /g'); do
+    if [ -z "${pathtable["$p"]}" ] ; then
+        pathtable["$p"]="$n"
+        pathtable_sorted["$n"]="$p"
+        n=$((n+1))
+    fi
+done
+
+for (( i=1 ; $i < ${#pathtable_sorted[@]}; i+=1 )) ; do
+    p="${pathtable_sorted[$i]}"
+    test -n "${prepath}" && prepath="${prepath}:"
+    prepath="${prepath}${p}"
+done
+#echo "[$prepath]"
+export PATH="$prepath"

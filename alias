@@ -1,0 +1,32 @@
+alias j='jobs'
+
+alias l.='ls -d .* -G'
+alias la='ls -latr -G'
+alias ll='ls -ltr -G'
+alias ls='ls -G'
+alias lr='ls -G -ltrR'
+
+alias pps='ps axwo ppid,pid,tty,user,group,%cpu,%mem,args'
+alias lhost='[ -n "$1" ] && grep $1 /etc/hosts || echo Usage: lhost host'
+#alias ipmi='/home/jnnewman/supermicro/IPMIView20.sh'
+
+alias kchrome='pkill chromium ; pkill chromium ; sleep 1 ; pkill -9 chromium'
+alias pchrome='pgrep chromium'
+
+alias kfox='pkill firefox ; pkill firefox ; sleep 1 ; pkill -9 firefox'
+alias pfox='ps auxw | grep firefox'
+
+export EDITOR=vim
+export SVN_EDITOR=vim
+
+export PAGER=less
+
+alias vi=vim
+alias cgrep='grep --color=always'
+
+# vim:ft=sh:ts=4:sts=4:ai:et:
+alias rc_getkey='sudo -u www gpg --homedir /var/www/roundcube/enigma/home/jnn/  --keyserver hkp://pool.sks-keyservers.net --recv-keys '
+alias catdn='cat > /dev/null'
+alias wgetnocheck='wget --no-check-certificate'
+alias pkg-rdeps='pkg query '\''%rn %ro %rv'\'''
+alias pkg-deps='pkg query '\''%dn %do %dv'\'''

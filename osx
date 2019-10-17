@@ -1,0 +1,11 @@
+# OSX specific stuff here
+
+uname=$(uname)
+
+if [[ "$uname" = "Darwin" ]] ; then
+    if [[ -x $(which brew) ]] ; then
+        alias bs='brew search $*'
+        alias bsinfo='brew info $*'
+    fi
+    alias ldd='otool -L'
+fi

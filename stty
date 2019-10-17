@@ -1,0 +1,2 @@
+alias sttyq='stty erase ^?'
+alias sttyh='stty erase ^H'
