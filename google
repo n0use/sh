@@ -1,13 +1,25 @@
-google () 
-{ 
-    browser=$(cat ${HOME}/etc/browser.txt)
+google()
+{
+    local s="$_"
+    local query=
 
-    open "${browser}" "http://google.com/search?q=$*"
+    case "$1" in
+        '')   ;;
+        that) query="search?q=${s//[[:space:]]/+}" ;;
+        *)    s="$*"; query="search?q=${s//[[:space:]]/+}" ;;
+    esac
+
+    if [ -z "${browser}" ]  ; then
+        [ -f ~/sh/browser ] && source ~/sh/browser
+    fi
+    [[ "$debug_sh" -gt 1 ]] && echo "${browser}"  "http://www.google.com/${query}"
+    open -a "${browser}"  "http://www.google.com/${query}"
+
 }
 
-wiki () 
-{ 
-    browser=$(cat ${HOME}/etc/browser.txt)
-
-    open "${browser}" "http://wikipedia.org/wiki/$*"
-}
+#wiki () 
+#{ 
+#    browser=$(cat ${HOME}/etc/browser.txt)
+#
+#    echo open "${browser}" "http://wikipedia.org/wiki/$*"
+#}

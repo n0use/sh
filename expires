@@ -1,0 +1,4 @@
+for f in $(find ~/expires/ -type f -cmin -60 -print) ; do 
+    source $f ; 
+done
+

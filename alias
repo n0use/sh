@@ -21,3 +21,9 @@ export EDITOR=vim
 export PAGER=less
 
 alias j='jobs'
+alias synfin.org='ssh synfin.org'
+alias ssh='/usr/bin/ssh'
+alias scp='/usr/bin/scp'
+alias sumesg='sudo dmesg'
+alias fixq='xattr -srd com.apple.quarantine .'
+alias scanq='xattr -vrs . 2> /dev/null | grep quarantine'

@@ -115,4 +115,10 @@ colorz ()
     done
 }
 
+for _color_sh in ${HOME}/sh/colors.d/* ; do
+    test -f "${_color_sh}" && source "${_color_sh}"
+done
+
 # vim:ts=4:sts=4:et:ai:syntax=sh:ft=sh
+
+

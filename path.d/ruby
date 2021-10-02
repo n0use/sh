@@ -1,0 +1,2 @@
+export RUBY_HOME=/usr/local/opt/ruby/bin
+export PATH="${RUBY_HOME}:${PATH}"

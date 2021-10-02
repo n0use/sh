@@ -1,6 +1,13 @@
 ##export PATH="/usr/local/bin:/usr/local/sbin:~jnn/bin:/$PATH:/sbin:/usr/sbin"
 ##export PATH="${PATH}:${HOME}/android-sdk/platform-tools/:${HOME}/android-sdk/build-tools/android-4.3/"
 
-export PATH="/usr/local/bin:/usr/local/sbin:/bin:/usr/bin:/sbin:/usr/sbin:${HOME}/bin:/opt/X11/bin:/Users/jnn/android-sdk/platform-tools:/Users/jnn/android-sdk/build-tools/android-4.3:/Users/jnn/scripts"
+export PATH="/usr/local/go/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/sbin:/bin:/usr/bin:/sbin:/usr/sbin:${HOME}/bin:/opt/X11/bin:/Users/jnn/android-sdk/platform-tools:/Users/jnn/android-sdk/build-tools/android-4.3:/Users/jnn/scripts"
 
 # /usr/local/MacGPG2/bin
+export PATH=$PATH:~/Libary/Python/3.7/bin
+export PATH="/usr/local/opt/openldap/bin:$PATH"
+export PATH="/usr/local/opt/openldap/sbin:$PATH"
+
+for _p in ~/sh/path.d/* ; do
+    source "${_p}"
+done

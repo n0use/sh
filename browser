@@ -1,0 +1,2 @@
+#browser=$(cat ~/etc/browser.txt | egrep -v "^[:space:]*#" | gsed 's/\([[:space:]]\)/\\\1/') 
+browser=$(cat ~/etc/browser.txt | egrep -v "^[:space:]*#")

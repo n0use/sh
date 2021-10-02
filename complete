@@ -1,3 +1,6 @@
 # disable all the ubuntu bash completion crap, for me anyway
 
 complete -r 
+
+  [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+

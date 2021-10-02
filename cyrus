@@ -1,0 +1,6 @@
+export CYR_DENY_DB=/var/lib/imap/user_deny.db
+
+export PATH=$PATH:/usr/lib/cyrus/bin/:x
+
+
+

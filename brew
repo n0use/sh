@@ -3,3 +3,26 @@ alias bs='brew search $*'
 alias bsinfo='brew info $*'
 
 export HOMEBREW_GITHUB_API_TOKEN='0bd701b4dc7ca05662f28b6448c9aa1f52671786'
+
+# readline
+# 
+#readline: stable 8.0.4 (bottled) [keg-only]
+#Library for command-line editing
+#https://tiswww.case.edu/php/chet/readline/rltop.html
+#/usr/local/Cellar/readline/8.0.4 (48 files, 1.5MB)
+#  Poured from bottle on 2020-02-26 at 05:07:18
+#From: https://github.com/Homebrew/homebrew-core/blob/master/Formula/readline.rb
+#==> Caveats
+#readline is keg-only, which means it was not symlinked into /usr/local,
+#because macOS provides the BSD libedit library, which shadows libreadline.
+#In order to prevent conflicts when programs look for libreadline we are
+#defaulting this GNU Readline installation to keg-only.
+#
+#For compilers to find readline you may need to set:
+#  export LDFLAGS="-L/usr/local/opt/readline/lib"
+#  export CPPFLAGS="-I/usr/local/opt/readline/include"
+#
+#For pkg-config to find readline you may need to set:
+#  export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
+
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:/usr/local/opt/readline/lib/pkgconfig"
