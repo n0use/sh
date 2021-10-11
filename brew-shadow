@@ -1,0 +1,91 @@
+#!/usr/local/bin/bash
+
+_main()
+{
+    action="$1"
+    pkg="$2"
+    
+    echo "action=$action pkg=$pkg"
+    
+    if [[ "${action}" -eq "link" ]] ; 
+    then 
+        brew-shadow-link "$pkg"
+    elif [[ "${action}" -eq "load" ]] ; then 
+        brew-shadow-load "$pkg"
+    else
+        echo "Usage: $0 link|load pkg"
+    fi
+}
+
+_date()
+{
+    date '+%Y-%m-%d--%H-%M-%S'
+}
+
+brew-shadow-load()
+{
+    pkg="$1"
+    for pkg_dir in "${HOME}/sh/brew.d/"* ; do
+         _pkg="$(basename ${pkg_dir})"
+        env="/tmp/$_pkg-env.$$"
+        if [[ "$_pkg" -eq "$pkg" ]] ; then
+            _vars="PATH PKG_CONFIG_PATH LDFLAGS CPPFLAGS" 
+            for var in "${_vars}" ; do
+                echo export "${var}"="$(grep "^${_pkg}_${var}=" $pkg_dir/vars.env | cut -d= -f2 | sed 's/"$//'):\$${var}\""  >> "$env"
+            done
+        fi
+        echo "$pkg environment loaded"
+        bash  -c "source $env" 
+        rm -f "${env}"
+    done
+}
+
+brew-shadow-link()
+{
+    bsl_debug=2
+    _saved_no_color="${HOMEBREW_NO_COLOR}"
+    export HOMEBREW_NO_COLOR="NO_COLOR"
+    pkg="${1}"
+    [ -z "${pkg}" ] && { echo "Usage: $0 pkg"; return 1; }
+
+    sh_homedir="${HOME}/sh/brew.d/${pkg}"
+    if [ -e "${sh_homedir}" ] ; then
+        sh_homedir_backup="${sh_homedir}/${pkg}-$(_date)"
+        [ ! -d "${sh_homedir_backup}" ] && mkdir -v -p "${sh_homedir_backup}"
+        echo "${sh_homedir} exists - mv'ing to ${sh_homedir_backup}"
+        mv -v "${sh_homedir}" "${sh_homedir_backup}"
+    fi
+    mkdir -v -p "${sh_homedir}"
+
+    out="/tmp/bsl.$$"
+    brew link "${pkg}" 2>&1 | tee "${out}"
+    if grep "^Warning: Refusing to link.*shadowed" ${out} ; then
+        echo "Setting up shadowed config files..." 
+        path=$(awk '/export PATH=/ { if (length($3)) { gsub(/['\''"]/, "", $3); print $3; } }' $out | cut -d= -f2)
+        ldflags=$(awk '/export LDFLAGS=/ { if (length($2)) { gsub(/['\''"]/, "", $2); print $2; } }' $out | cut -d= -f2)
+        cppflags=$(awk '/export CPPFLAGS=/ { if (length($2)) { gsub(/['\''"]/, "", $2); print $2; } }' $out | cut -d= -f2)
+        pkg_config_path=$(awk '/export PKG_CONFIG_PATH=/ { if (length($2)) { gsub(/['\''"]/, "", $2); print $2; } }' $out | cut -d= -f2)
+        if [ $bsl_debug -gt 0 ] ; then
+            echo "sh files will live in ${sh_homedir}.."
+            echo
+            echo "path=${path}"
+            echo "lddflags=${lddflags}"
+            echo "cppflags=${cppflags}"
+            echo "pkg_config_path=${pkg_config_path}"
+            echo ""
+            if [ "${bsl_debug}" -gt 1 ] ; then  
+                echo "the default brew output from which we parsed values -" 
+                cat "${out}"
+            fi
+        fi
+        cat > "${sh_homedir}/vars.env" <_EOF_
+export "${pkg}_PATH=\"$path\""
+export "${pkg}_LDDFLAGS=\"$lddflags\""
+export "${pkg}_CPPFLAGS=\"$cppflags\""
+export "${pkg}_PKG_CONFIG_PATH=\"${pkg_config_path}\""
+_EOF_
+    fi
+    export HOMEBREW_NO_COLOR="${_saved_no_color}"
+    # rm -f "${out}"
+}
+

@@ -2,7 +2,11 @@ alias bs='brew search $*'
 
 alias bsinfo='brew info $*'
 
-export HOMEBREW_GITHUB_API_TOKEN='0bd701b4dc7ca05662f28b6448c9aa1f52671786'
+#export HOMEBREW_GITHUB_API_TOKEN='0bd701b4dc7ca05662f28b6448c9aa1f52671786'
+#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
+export HOMEBREW_GITHUB_API_TOKEN='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'
+
+
 
 # readline
 # 

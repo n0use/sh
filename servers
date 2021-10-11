@@ -1,10 +1,8 @@
 
-servers=~/etc/servers.txt
-pservers=~/etc/production_servers.txt
-#bservers=~/etc/bastions.txt
-#jservers=~/etc/jumpbox-servers.txt
-#wservers#=~/etc/ks_servers.txt
+servers_conf="${HOME}/etc/servers.conf"
 
+
+# format is - alias:user:host:[protocol]:[port]:[shell]
 
 cachedout() 
 {
@@ -21,52 +19,15 @@ h()
     grep "$1" /etc/hosts
 }
 
-servers()
+load_servers()
 {
-    if [[ $1 =~ "pv" || $1 =~ "vp" ]] ; then
-        alias | grep '=.ssh ' | grep pe-local | sed 's/.*ssh \(.*\)@\(.*\).$/ssh \1@\2/'
-    elif [[ $1 =~ "v" ]] ; then
-        alias | grep '=.ssh ' | grep -v pe-local | sed 's/.*ssh \(.*\)@\(.*\).$/ssh \1@\2/'
-    elif [[ $1 =~ "p" ]] ; then
-        alias | grep '=.ssh ' | grep pe-local | sed 's/.*ssh \(.*\)@\(.*\).$/\2 (\1)/'
-    else 
-        alias | grep '=.ssh ' | grep -v pe-local | sed 's/.*ssh \(.*\)@\(.*\).$/\2 (\1)/'
-    fi
-
+	rm -f /tmp/servers.$$
+    cat "${servers_conf}" | sed 's/^[ \t]*//' | grep -v -e "^$" -e "^#"   | while read _line; do
+        echo "l = $_line"
+		
+        echo "$_line" | awk -F:   '{ cmd=$6; if (length(cmd) == 0) { cmd=\"bash\"; } ; printf("alias srv_%s=\"%s %s@%s -c %s\"\n", $1, $4, $2, $3, cmd) ; }' >> /tmp/servers.$$
+    done
+    source /tmp/servers.$$ && rm -f /tmp/servers.$$
 }
 
-function addserver
-{
-    server=$1
-    user=$2
-
-    if [ -z "${server}" ] ; then
-        echo "Usage: addserver fqdn.of.server [username]"
-        echo " username will default to your current user ($(whoami))"
-        return 1
-    fi
-    [ -z "${user}" ] && user="$(whoami)"
-    echo "${user}@${server}" >> ${servers}
-}
-
-
-#for s in $(sed 's/[:space:]*#.*$//' ${servers} ${pservers}) ; do
-#for s in $(cat ${servers} ${pservers} ${bservers} ${jservers} | sed 's/[:space:]*#.*//') ; do
-for s in $(cat ${servers} | sed 's/[:space:]*#.*//') ; do
-    regex='(.*)@([a-zA-Z0-9\-\_\.]*)'
-    regex2='(.*)@(.*):([0-9]*)'
-    if [[ ${s} =~ $regex2 ]] ; then 
-        user=${BASH_REMATCH[1]}
-        server=${BASH_REMATCH[2]}
-        port=${BASH_REMATCH[3]}
-        alias "${server}=ssh ${user}@${server} -p ${port}"
-    elif [[ ${s} =~ $regex ]] ; then
-        user=${BASH_REMATCH[1]}
-        server=${BASH_REMATCH[2]}
-        alias "${server}=ssh ${user}@${server}"
-    else 
-        alias "${s}=ssh jnewman@${s}"
-    fi
-done
-
-# vim:ts=4:sts=4:ai:et:syntax=sh:ft=sh:
+load_servers
