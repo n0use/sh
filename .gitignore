@@ -5,3 +5,4 @@
 *.broke
 *.test
 tmp/*
+brew.d/*
