@@ -1,0 +1,8 @@
+.*.sw*
+.DS_Store
+*~
+*.disabled
+*.broke
+*.test
+tmp/*
+brew.d/*
