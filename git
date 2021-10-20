@@ -1,1 +1,3 @@
-export GIT_EDITOR="mvim -f --nomru -c \"au VimLeave * !open -a Terminal\""
+# export GIT_EDITOR="mvim -f --nomru -c \"au VimLeave * !open -a Terminal\""
+# i
+export GIT_EDITOR=vim

@@ -1,4 +1,3 @@
-
 servers_conf="${HOME}/etc/servers.conf"
 
 
@@ -21,13 +20,16 @@ h()
 
 load_servers()
 {
+    debug_sh=""
 	rm -f /tmp/servers.$$
     cat "${servers_conf}" | sed 's/^[ \t]*//' | grep -v -e "^$" -e "^#"   | while read _line; do
-        echo "l = $_line"
+        test -n "$debug_sh" && echo "l = $_line"
 		
-        echo "$_line" | awk -F:   '{ cmd=$6; if (length(cmd) == 0) { cmd=\"bash\"; } ; printf("alias srv_%s=\"%s %s@%s -c %s\"\n", $1, $4, $2, $3, cmd) ; }' >> /tmp/servers.$$
+        echo "$_line" | awk -F:   '{ cmd=$6; if (length(cmd) == 0) { cmd="bash"; } ; printf("alias srv_%s=\"%s %s@%s -c %s\"\n", $1, $4, $2, $3, cmd) ; }' >> /tmp/servers.$$
     done
     source /tmp/servers.$$ && rm -f /tmp/servers.$$
 }
 
 load_servers
+
+# vim:ft=sh:ts=4:sts=4:et:ai:shell=bash
