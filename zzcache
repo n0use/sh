@@ -1,7 +1,0 @@
-# enable ccache
-
-export PATH=/usr/local/libexec/ccache:$PATH
-export CCACHE_PATH=/usr/bin:/usr/local/bin
-
-# define NOCCACHE to disable it
-# export NOCCACHE=1
