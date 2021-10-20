@@ -3,7 +3,7 @@ servers_conf="${HOME}/etc/servers.conf"
 
 # format is - alias:user:host:[protocol]:[port]:[shell]
 
-cachedout() 
+iterm_cachedout() 
 {
     iterm2_set_user_var ssh_string "${USER} @ cachedout.net"
     ssh -v "${USER}@cachedout.net"
@@ -18,16 +18,29 @@ h()
     grep "$1" /etc/hosts
 }
 
+
+#cachedout:jnn:cachedout.net:et:2022:/bin/bash
+#cachedhit:jnn:cachedhit.net:et:2022:/bin/bash
+#spamdb_cachedout:spamd:cachedout.net:et:2022:/usr/bin/mysql -u spamd mail
+
 load_servers()
 {
-    debug_sh=""
+    debug_sh="1"
 	rm -f /tmp/servers.$$
-    cat "${servers_conf}" | sed 's/^[ \t]*//' | grep -v -e "^$" -e "^#"   | while read _line; do
+    rm -f /tmp/ls.$$
+    sed 's/^[ \t]*//' "${servers_conf}" | grep -v -e "^$" -e "^#"  > /tmp/ls.$$  
+    cat "/tmp/ls.$$" | while read -r _line; do
         test -n "$debug_sh" && echo "l = $_line"
-		
-        echo "$_line" | awk -F:   '{ cmd=$6; if (length(cmd) == 0) { cmd="bash"; } ; printf("alias srv_%s=\"%s %s@%s -c %s\"\n", $1, $4, $2, $3, cmd) ; }' >> /tmp/servers.$$
+        echo "$_line" | awk -F:   '{ 
+              if (length($1) && length($2) && length($3) && length($4)) {   
+                printf("alias %s=\"%s %s@%s", $1, $4, $2, $3) ;
+                if (length($6)) { printf(" -c \\\"%s\\\"\"\n", $6); } else {
+                    printf("\"\n"); 
+                }
+              } }' >> /tmp/servers.$$
     done
-    source /tmp/servers.$$ && rm -f /tmp/servers.$$
+    rm -f /tmp/ls.$$
+    source /tmp/servers.$$  && rm -f /tmp/servers.$$
 }
 
 load_servers

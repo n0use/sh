@@ -13,9 +13,7 @@ function etchost()
 {
     _host="$1"
     if [ -n "${_host}" ] ; then
-        grep "$_host" /etc/hosts
-    else
-        echo "Usage: etchost hostname"
+        grep -v "^#" /etc/hosts | grep "$_host" || echo "Usage: etchost hostname"
     fi
 }
 
