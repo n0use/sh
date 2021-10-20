@@ -3,6 +3,7 @@ servers_conf="${HOME}/etc/servers.conf"
 
 # format is - alias:user:host:[protocol]:[port]:[shell]
 
+# example of how to use iterm2_set_user_var in functions
 iterm_cachedout() 
 {
     iterm2_set_user_var ssh_string "${USER} @ cachedout.net"
@@ -10,22 +11,9 @@ iterm_cachedout()
     iterm2_set_user_var ssh_string "[ no active ssh ]"
 }
 
-h()
-{
-    if [ -z "$1" ] ; then
-        echo "Usage: h hostname"
-    fi
-    grep "$1" /etc/hosts
-}
-
-
-#cachedout:jnn:cachedout.net:et:2022:/bin/bash
-#cachedhit:jnn:cachedhit.net:et:2022:/bin/bash
-#spamdb_cachedout:spamd:cachedout.net:et:2022:/usr/bin/mysql -u spamd mail
-
 load_servers()
 {
-    debug_sh="1"
+    debug_sh=""
 	rm -f /tmp/servers.$$
     rm -f /tmp/ls.$$
     sed 's/^[ \t]*//' "${servers_conf}" | grep -v -e "^$" -e "^#"  > /tmp/ls.$$  
@@ -45,4 +33,4 @@ load_servers()
 
 load_servers
 
-# vim:ft=sh:ts=4:sts=4:et:ai:shell=bash
+# vim:ft=sh:ts=4:sts=4:et:ai:syntax=bash
