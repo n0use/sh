@@ -1,3 +1,0 @@
-GPG_AGENT_INFO=/Users/jnn/.gnupg/S.gpg-agent:270:1; export GPG_AGENT_INFO;
-SSH_AUTH_SOCK=/Users/jnn/.gnupg/S.gpg-agent.ssh; export SSH_AUTH_SOCK;
-SSH_AGENT_PID=270; export SSH_AGENT_PID;

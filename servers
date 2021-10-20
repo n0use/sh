@@ -3,13 +3,6 @@ servers_conf="${HOME}/etc/servers.conf"
 
 # format is - alias:user:host:[protocol]:[port]:[shell]
 
-# example of how to use iterm2_set_user_var in functions
-iterm_cachedout() 
-{
-    iterm2_set_user_var ssh_string "${USER} @ cachedout.net"
-    ssh -v "${USER}@cachedout.net"
-    iterm2_set_user_var ssh_string "[ no active ssh ]"
-}
 
 load_servers()
 {
