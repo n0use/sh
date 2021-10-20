@@ -17,6 +17,16 @@ function etchost()
     fi
 }
 
+function add_sh_modeline()
+{
+    modeline="\# vim:ts=4:sts=4:ai:et:syntax=bash:ft=bash:"
+    for f in $* ; do
+        echo updating "$f"...
+        echo "${modeline}" >> "${f}"
+    done
+}
+
+
 
 
 export EDITOR=vim
@@ -41,4 +51,4 @@ alias kill8='kill -9 %8'
 alias kill9='kill -9 %9'
 alias kill10='kill -9 %10'
 
-# vim:ts=4:sts=4:ft=bash:et:ai
+# vim:ts=4:sts=4:ai:et:syntax=bash:ft=bash:
