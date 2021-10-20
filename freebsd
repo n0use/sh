@@ -1,1 +1,0 @@
-alias pkg-old='pkg version -l '\''<'\'''
