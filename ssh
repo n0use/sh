@@ -1,0 +1,1 @@
+alias openssl_view='openssl x509 -noout -text -in'

@@ -1,0 +1,81 @@
+# shellcheck shell=bash
+bsl_debug=0
+
+_date()
+{
+    date '+%Y-%m-%d--%H-%M-%S'
+}
+
+_brew-shadow-load()
+{
+    pkg="$1"
+    [ -z "${pkg}" ] && { echo "Usage: brew-shadow [init|load] pkg"; return 1; }
+
+    _env="${HOME}/sh/brew.d/${pkg}/vars.env" 
+    echo "check for $_env"
+    if [ -f "${_env}" ] ; then
+        _tmp_env="/tmp/bsl-${pkg}.$$"
+        echo "source ${HOME}/.bashrc" > $_tmp_env
+        cat "${_env}" >> "${_tmp_env}"
+        echo "export PS1=\"[[brew-${pkg}]] $PS1\"" >> "${_tmp_env}"
+        /usr/local/bin/bash  --rcfile "${_tmp_env}"
+        rm -f "${_tmp_env}"
+    fi
+}
+
+
+_brew-shadow-init()
+{
+    _saved_no_color="${HOMEBREW_NO_COLOR}"
+    export HOMEBREW_NO_COLOR="NO_COLOR"
+    pkg="${1}"
+    [ -z "${pkg}" ] && { echo "Usage: brew-shadow [init|load] pkg"; return 1; }
+
+    out="/tmp/bsl.$$"
+    brew link "${pkg}" > "${out}" 2>&1 
+    if grep -q "^Error:.*No such keg" "${out}" ; then
+        echo "keg ${pkg} not found by homebrew!  Aborting."
+        return 2
+    fi
+
+
+    sh_homedir="${HOME}/sh/brew.d/${pkg}"
+    if [ -e "${sh_homedir}" ] ; then
+        sh_homedir_backup="${sh_homedir}/${pkg}-$(_date)"
+        [ ! -d "${sh_homedir_backup}" ] && mkdir -v -p "${sh_homedir_backup}"
+        echo "${sh_homedir} exists - mv'ing to ${sh_homedir_backup}"
+        mv -v "${sh_homedir}" "${sh_homedir_backup}"
+    fi
+    mkdir -v -p "${sh_homedir}"
+
+    if grep -q "^Warning: Refusing to link.*shadowed" ${out} ; then
+        echo "Setting up shadowed config files..." 
+        grep "^[        ]*export " "${out}" | gsed 's/^[ \t]\+//'  > "${sh_homedir}/vars.env"
+        awk "/^\s+echo\s+'export/  {  _path=\$3; gsub(/'\$/, \"\", _path);  printf(\"export %s\n\", _path); }" "$out" >> "${sh_homedir}/vars.env"
+        if [ $bsl_debug -gt 0 ] ; then
+            echo "sh files will live in ${sh_homedir}.."
+            if [ "${bsl_debug}" -gt 1 ] ; then  
+                echo "the default brew output from which we parsed values -" 
+                cat "${out}"
+            fi
+        fi
+    fi
+    export HOMEBREW_NO_COLOR="${_saved_no_color}"
+    rm -f "${out}"
+}
+
+brew-shadow()
+{
+    action="$1"
+    pkg="$2"
+
+    [ -z "${pkg}" ] && { echo "Usage: __brew-shadow [init|load] pkg"; return 1; }
+
+    [[ "${action}" == "init" ]] && _brew-shadow-init "${pkg}" || [[ "${action}" == "load" ]] && _brew-shadow-load "${pkg}" 
+
+    return $?
+}
+
+
+
+# vim:ts=4:sts=4:ai:et:syntax=sh:ft=sh:

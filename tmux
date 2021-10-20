@@ -4,11 +4,9 @@ alias troot='tmux attach-session -t root'
 alias tjails='tmux attach-session -t jails'
 alias tfullscreen='tmux attach-session -t fullscreen'
 alias tlist='echo "Session list [tmux list-session].." && tmux list-session'
-alias lstmux='echo "Session list [tmux list-session].." && tmux list-session'
 
-# dont need this tmux alias no mo' - in fact, it breaks tmux, because of the TERM setting (cant open terminfo db)
-# Fri Oct 19 09:09:05 EDT 2018
 # alias tmux='TERM=tmux tmux -u'
+alias tmux='tmux -u -f ~/.tmux.conf'
 
 
 function tatt()
@@ -16,31 +14,24 @@ function tatt()
 #    _tmux=$(which tmux)
     _tmux=/usr/local/bin/tmux
     detach=yes
-    s="$@"
 
     if [ -z "${_tmux}" ]; then
         echo "tmux not found"
         return 1
     fi
 
-    if [ -z "$s" ] ; then
-        echo "Usage: tatt session-name"
-        echo ""
-        echo "Current sessions: "
-        $_tmux list-session > /tmp/tms.$$ 2> /dev/null
-        if [ -s /tmp/tms.$$ ] ; then 
-            cat /tmp/tms.$$
-        else
-            echo " None found!"
-        fi
-        rm -f /tmp/tms.$$
-        return 1
-    fi
+    s="$@";
 
     if [ "$1" = "-n" ] ; then
         detach=no
         shift
     fi
+
+    if [ -z "$s" ] ; then
+        echo "Usage: tatt session-name"
+        return 1
+    fi
+
 
     sessions=$(tmux list-sessions | awk -F: '{ print $1 }')
     if echo "$sessions" | egrep "^${s}$|^${s}\W|\W${s}\W|${s}$" > /dev/null 2>&1 ; then
@@ -56,8 +47,6 @@ function tatt()
     fi
 
 }
-
-
 
 
 function tdet()

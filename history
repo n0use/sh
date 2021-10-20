@@ -1,53 +1,104 @@
-# Allows an NFS mounted home directory across multiple machines to keep separate bash history files, based on machine name
-# and session time (so that even on the same machine, multiple invocations of bash will keep a separate history file)
-# All history files stored under ~/.history/
-#
-# Part of John Newman's <jnn@synfin.org> start-up scripts for bash... please take it and use it as you like :)
+export HISTFILESIZE=15000
+export HISTSIZE=15000
 
-if [ ! -d ~/.history ] ; then
-    mkdir ~/.history
-fi
-
-HISTCONTROL=ignoredups
+HISTCONTROL=ignoreboth:erasedups
 
 shopt -s histappend 
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+#PROMPT_COMMAND="history -w;$PROMPT_COMMAND"
+PROMPT_COMMAND=${PROMPT_COMMAND:-history -a}
 
 _host=$(hostname | awk -F. '{ print $1 }')               
 _date=$(date '+%m-%d-%y-%s')
 
-_HISTFILE=~/.history/bash-history-${_host}-${_date}
+HISTFILE="${HOME}/.history/bash-history-${_host}-${_date}"
 
-if [ -f "${_HISTFILE}" ] ; then
-    _HISTFILE="${HISTFILE}a$$"
-fi
+_epoch_cmd="$HOME/bin/epoch2time-hist.pl"
 
-HISTFILE=${_HISTFILE}
-HISTFILESIZE=10000
-HISTSIZE=10000
+_hist_usage()
+{
+    error=$*
 
-function hist () 
-{ 
+    [[ -n "${error}" ]] && echo "Error - ${error}\n\n"
+    echo "Usage: hist [-t] [-n X] search-pattern";
+    echo " -t will disable the more readable time format";
+    echo " -n X - will print the bare command numbered X from the most recent hist output";
+    echo " -nn X - will print the command numbered X from the most recent hist output";
+}
+
+hist() {
     grep_cmd='egrep'
     grep_flags=''
     grep_str=''
+    format_time=''
+    cmd_num=''
+    debug="0"
+    [ "$1" = "-d" ] && \
+        { debug=1; shift; } 
 
-    if [ ! -d ~/.history/ ]; then
-        echo "Your history files are not setup correctly - ~/.history/ directory missing!";
+    unset CLICOLOR_FORCE
+
+    if [ ! -d ${HOME}/.history/ ]; then
+        echo "Your history files are not setup correctly - ${HOME}/.history/ directory missing!";
         return 1;
     fi;
 
+    kill_comment=""
+    run_cmd=0
+    test -x "${_epoch_cmd}"  && format_time="$_epoch_cmd" || { echo "FATAL - missing time format tool, ($_epoch_cmd). Aborting." && return 1; }
+    if [ "$1" = "-t" ] ; then
+        shift
+        format_time=""
+    elif [[ "$1" =~ ^-([Nnr]?)([0-9]*)$ ]] ; then
+        last_arg=${BASH_REMATCH[1]}
+        [[ -n "${BASH_REMATCH[2]}" ]] && cmd_num=${BASH_REMATCH[2]} || cmd_num=$2
+        if [[ "$last_arg" = "r" || "$last_arg" = "" ]] ; then
+            run_cmd=1
+        elif [[ "$last_arg" =~ ^([Nn]).*$ ]] ; then
+            [[ "${BASH_REMATCH[1]}" = "n" ]] && kill_comment=1 || kill_comment=0
+        else
+            _hist_usage && return 1
+        fi
+    fi
+
+    if [ ! -d ${HOME}/.hist/$$ ] ; then
+        mkdir -p ${HOME}/.hist/$$
+    fi
     if (( "$#" >= 2 )) ; then
         grep_flags=$1
         grep_str=$2
     elif (( "$#" == 1 )) ; then
         grep_str=$1
-    else 
-        echo "Usage: hist [-flags] search-pattern";
-        return 1;
+    else
+        _hist_usage && return 1
     fi
 
-#    ${grep_cmd} ${grep_flags} ${grep_str} ~/.history/*
-    ls -G -tr ~/.history/bash-history-* | xargs -J % ${grep_cmd} ${grep_flags} ${grep_str} %
+#        /bin/ls -tr ${HOME}/.history/bash-history-* | xargs -L 65535 ${grep_cmd} ${grep_flags} ${grep_str} | sed 's/.*bash-history-//' 
 
+    [ -z "${format_time}" ] && format_time="sed 's/.*bash-history-//'"
+
+    if [ -n "${cmd_num}" ] ; then
+        [[ -f "${last_hist}" ]] || { echo "fatal error: last history file ($last_hist) missing" ; return 2; }
+        last_hist=$(cat ${HOME}/.hist/$$/last.txt)
+        post_cmd="^[^0-9]${cmd_num}:"
+
+        [[ ${kill_comment} = 1 || $run_cmd == 1 ]] && post_cmd="grep ${post_cmd}" || post_cmd="grep -B1 ${post_cmd}"
+
+        cmd="$(cat "${last_hist}" | $post_cmd | sed "s/^ ${cmd_num}:/ /")"
+
+        [[ $run_cmd == 1 ]] && { sh -c  "$cmd" ; return $?; } || echo "$cmd"
+    else
+        last_hist="${HOME}/.hist/$$/hist.txt"
+        echo "${last_hist}" > ${HOME}/.hist/$$/last.txt
+        /bin/ls -tr ${HOME}/.history/bash-history-* | xargs -L 65535 ${grep_cmd} ${grep_flags} ${grep_str} | $format_time | tee "${last_hist}"
+    fi
 }
+
+fixhist()
+{
+    sudo chown -R "${USER}" "${HOME}/.history/" && \
+        sudo find "${HOME}/.history" -type f -print0 | sudo xargs -0 chmod 644 && \
+            sudo chmod 700 "${HOME}/.history"
+}
+
+
+# vim:ft=sh:sts=4:ts=4

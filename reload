@@ -1,0 +1,20 @@
+
+
+function reload()
+{
+    
+    [[ "$1" =~ ^-(.)$ ]] && opt=${BASH_REMATCH[1]}
+    
+    if [[ "$opt" == "v" ]] ; 
+    then
+        verbose=1
+    else
+        verbose=0
+    fi
+
+    for f in $HOME/.bashrc $HOME/.bash_profile $HOME/sh/* ; do 
+        source $f
+    done
+    
+}
+

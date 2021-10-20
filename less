@@ -1,1 +1,17 @@
-export LESS='-R'
+CLICOLOR_FORCE=1
+export CLICOLOR_FORCE
+
+LESS='-R'
+export LESS
+
+/usr/local/bin/lesspipe.sh >    /tmp/lp.$$
+source /tmp/lp.$$ &&            rm -f /tmp/lp.$$
+
+#LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
+#export LESSOPEN
+
+LESS_ADVANCED_PREPROCESSOR=1 
+export LESS_ADVANCED_PREPROCESSOR
+
+# so we get colors in our json output
+alias jq='jq -C'

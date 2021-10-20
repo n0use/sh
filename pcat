@@ -1,0 +1,7 @@
+pcat()
+{
+  local out colored
+  out=$(cat $@)
+  colored=$(echo $out | pygmentize -f console -g 2> /dev/null)
+ [[ -n "${colored}" ]] && echo "${colored}" || echo "$out"
+}

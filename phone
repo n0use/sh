@@ -1,4 +1,3 @@
 alias phonels='adb devices'
 alias phoneusb='adb shell $*'
-# old alias for when doing reverse tunnel back into ssh server on phone
-#alias sshphone='ssh root@synfin.org -p 2323'
+alias phone='ssh root@synstorm.net -p 2323'

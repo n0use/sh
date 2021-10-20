@@ -1,0 +1,4 @@
+iterm2_set_user_var ipaddr $(~/bin/ipecho.sh)
+# \(user.ipaddr)
+
+iterm2_set_user_var 
