@@ -1,29 +1,46 @@
 #alias j=jobs
 
-alias l.='ls -d .* -G'
-alias la='ls -latr -G'
-alias ll='ls -ltr -G'
-alias ls='ls -G'
-alias lr='ls -G -ltrR'
+alias l.='ls -de .* -G'
+alias la='ls -latre -G'
+alias ll='ls -ltre -G'
+alias ls='ls -Ge'
+alias lr='ls -G -ltrRe'
 
 alias pps='ps axwo ppid,pid,tty,user,group,%cpu,%mem,args'
-alias lhost='[ -n "$1" ] && grep $1 /etc/hosts || echo Usage: lhost host'
-alias ipmi='/home/jnnewman/supermicro/IPMIView20.sh'
 
-alias kchrome='pkill chromium ; pkill chromium ; sleep 1 ; pkill -9 chromium'
-alias pchrome='pgrep chromium'
 
-alias kfox='pkill firefox ; pkill firefox ; sleep 1 ; pkill -9 firefox'
-alias pfox='ps auxw | grep firefox'
+function etchost()
+{
+    _host="$1"
+    if [ -n "${_host}" ] ; then
+        grep "$_host" /etc/hosts
+    else
+        echo "Usage: etchost hostname"
+    fi
+}
+
+
 
 export EDITOR=vim
 
 export PAGER=less
 
 alias j='jobs'
-alias synfin.org='ssh synfin.org'
-alias ssh='/usr/bin/ssh'
-alias scp='/usr/bin/scp'
-alias sumesg='sudo dmesg'
-alias fixq='xattr -srd com.apple.quarantine .'
-alias scanq='xattr -vrs . 2> /dev/null | grep quarantine'
+
+alias fix_quarantine='xattr -srd com.apple.quarantine .'
+alias scan_quarantine='xattr -vrs . 2> /dev/null | grep quarantine'
+
+alias flushdns='sudo dscacheutil -flushcache ; sudo killall -HUP mDNSResponder'
+
+alias kill1='kill -9 %1'
+alias kill2='kill -9 %2'
+alias kill3='kill -9 %3'
+alias kill4='kill -9 %4'
+alias kill5='kill -9 %5'
+alias kill6='kill -9 %6'
+alias kill7='kill -9 %7'
+alias kill8='kill -9 %8'
+alias kill9='kill -9 %9'
+alias kill10='kill -9 %10'
+
+# vim:ts=4:sts=4:ft=bash:et:ai
