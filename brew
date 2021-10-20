@@ -1,4 +1,5 @@
-export HOMEBREW_GITHUB_API_TOKEN='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'
+# export HOMEBREW_GITHUB_API_TOKEN='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'
+export HOMEBREW_GITHUB_API_TOKEN='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'
 
 
 
@@ -22,3 +23,4 @@ export HOMEBREW_GITHUB_API_TOKEN='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'
 #  export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
 
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig/:/usr/local/opt/readline/lib/pkgconfig"
+# vim:ts=4:sts=4:ai:et:syntax=bash:ft=bash:
