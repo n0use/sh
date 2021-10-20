@@ -1,1 +1,0 @@
-export PATH="$PATH:$(xcode-select -p)"

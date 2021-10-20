@@ -1,6 +1,0 @@
-run_cmd() { 
-    echo "+ COMMAND: [ $@ ] STARTING" && $@
-    rc=$?
-    echo "- COMMAND: [ $@ ] FINISHED! exit value: $rc" 
-    return $rc
-}
