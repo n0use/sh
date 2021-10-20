@@ -1,15 +1,7 @@
-alias bs='brew search $*'
-
-alias bsinfo='brew info $*'
-
-#export HOMEBREW_GITHUB_API_TOKEN='0bd701b4dc7ca05662f28b6448c9aa1f52671786'
-#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
-export HOMEBREW_GITHUB_API_TOKEN='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'
+export HOMEBREW_GITHUB_API_TOKEN='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'
 
 
 
-# readline
-# 
 #readline: stable 8.0.4 (bottled) [keg-only]
 #Library for command-line editing
 #https://tiswww.case.edu/php/chet/readline/rltop.html
