@@ -1,2 +1,0 @@
-
-export PATH="${PATH}:${HOME}/android-sdk/platform-tools/:${HOME}/android-sdk/build-tools/android-4.3/"
