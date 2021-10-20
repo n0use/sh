@@ -7,3 +7,4 @@ pkg-port ()
 { 
     pkg query -e '%a = 0' '%o %n-%v %R' | awk '$3 == "unknown-repository" { print $1 }'
 }
+alias pkg-old='pkg version -l '\''<'\'''
