@@ -12,3 +12,4 @@ Obviously that doesn't apply to this file :)
 
 # vim:ts=4:sts=4:ai:et:syntax=markdown:ft=markdown:
 
+<a rel="me" href="https://aus.social/@jnn">jnn @ aus.social</a>
