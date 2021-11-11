@@ -1,12 +1,41 @@
+_gpg_agent_rc="${HOME}/sh/tmp/gpg-agent.rc"
+_gpg_agent_pid=$(ps -xj | awk '$1 ~ /'$USER'/ && $10 ~ /gpg-agent/ { print $2 }')
+
+_start_gpg_agent()
+{
+    DISPLAY="" gpg-agent --daemon --enable-ssh-support --homedir ~/.gnupg/ --sh > "$_gpg_agent_rc"
+}
+
+_set_gpg_vars()
+{
+    test -f "$_gpg_agent_rc" && source "$_gpg_agent_rc"
+    unset SSH_AGENT_PID
+    if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket 2>/dev/null)"
+    fi 
+}
+
+_test_mine()
+{
+    for _f in "$@" ; do
+        test -s "$_f" || { echo "nofile"; return 2; }
+        test -w "$_f" || { echo "perms" ; return 1; }
+    done
+    echo "ok"
+    return 0
+}
 
 # check and see if we have a gpg-agent running, if not start her up
-if [ -z "$(ps -U $USER | awk '$5 ~ /^gpg-agent/ { print $1 ; }')" ] ; then
-    DISPLAY="" gpg-agent --daemon --enable-ssh-support --homedir ~/.gnupg/ --sh > ~/sh/gpg-agent.rc
-    source ~/sh/gpg-agent.rc
-    GPG_TTY=$(tty)
-    export GPG_TTY
+_rc_status="$(_test_mine $_gpg_agent_rc)"
+if [[ "$_rc_status" == "perms" ]] ; then
+    echo "fix permissions on \"$_gpg_agent_rc\".."
+    return 1
 fi
+test -z "$_gpg_agent_pid"  && _start_gpg_agent
+
 if [ -n "${GPG_TTY}" ] ; then
     GPG_TTY=$(tty)
     export GPG_TTY
 fi
+
+# vim:ts=4:sts=4:ai:et:syntax=bash:ft=bash:

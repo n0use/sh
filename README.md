@@ -1,4 +1,4 @@
-These are various bash shell code snippets pulled in by ~/.bashrc.
+h1# These are various bash shell code snippets pulled in by ~/.bashrc.
 
 1. The shell iterators over ~/sh (and a few subdirs), sourcing files as needed.
 2. Makes it very easy to update shell environment - just drop in a new snippet in "${HOME}/sh/directory".
