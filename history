@@ -16,9 +16,9 @@ _epoch_cmd="$HOME/bin/epoch2time-hist.pl"
 
 _hist_usage()
 {
-    error=$*
+    error="$*"
 
-    [[ -n "${error}" ]] && echo "Error - ${error}\n\n"
+    test -n  && printf 'Error - %s\n\n' ${error}
     echo "Usage: hist [-t] [-n X] search-pattern";
     echo " -t will disable the more readable time format";
     echo " -n X - will print the bare command numbered X from the most recent hist output";
@@ -44,7 +44,8 @@ hist() {
 
     kill_comment=""
     run_cmd=0
-    test -x "${_epoch_cmd}"  && format_time="$_epoch_cmd" || { echo "FATAL - missing time format tool, ($_epoch_cmd). Aborting." && return 1; }
+    #test -x "${_epoch_cmd}"  && format_time="$_epoch_cmd" || { echo "FATAL - missing time format tool, ($_epoch_cmd). Aborting." && return 1; }
+    test -x "${_epoch_cmd}"  || { echo "FATAL - missing time format tool, ($_epoch_cmd). Aborting." && return 1; }
     if [ "$1" = "-t" ] ; then
         shift
         format_time=""
@@ -56,9 +57,10 @@ hist() {
         elif [[ "$last_arg" =~ ^([Nn]).*$ ]] ; then
             [[ "${BASH_REMATCH[1]}" = "n" ]] && kill_comment=1 || kill_comment=0
         else
-            _hist_usage && return 1
+            _hist_usage "" && return 1
         fi
     fi
+            echo "run_cmd=${run_cmd}"
 
     if [ ! -d ${HOME}/.hist/$$ ] ; then
         mkdir -p ${HOME}/.hist/$$
@@ -74,22 +76,25 @@ hist() {
 
 #        /bin/ls -tr ${HOME}/.history/bash-history-* | xargs -L 65535 ${grep_cmd} ${grep_flags} ${grep_str} | sed 's/.*bash-history-//' 
 
-    [ -z "${format_time}" ] && format_time="sed 's/.*bash-history-//'"
+    #test -z ${format_time} && format_time="sed 's%.*bash-history-%%'"
+    test -z ${format_time} && format_time='s#.*bash-history-##'
 
     if [ -n "${cmd_num}" ] ; then
-        [[ -f "${last_hist}" ]] || { echo "fatal error: last history file ($last_hist) missing" ; return 2; }
-        last_hist=$(cat ${HOME}/.hist/$$/last.txt)
-        post_cmd="^[^0-9]${cmd_num}:"
+        last_hist="$(cat ${HOME}/.hist/$$/last.txt)"
+        [ -f "${last_hist}" ] || { echo "fatal error: last history file ($last_hist) missing" ; return 2; }
+        post_grep_re="^[^0-9]${cmd_num}:"
+#        ls "${post_args[@]}"
 
-        [[ ${kill_comment} = 1 || $run_cmd == 1 ]] && post_cmd="grep ${post_cmd}" || post_cmd="grep -B1 ${post_cmd}"
+        [[ ${kill_comment} = 1 || $run_cmd == 1 ]] && post_args=("${post_grep_re}") || post_args=(-B1 "${post_grep_re}")
 
-        cmd="$(cat "${last_hist}" | $post_cmd | sed "s/^ ${cmd_num}:/ /")"
+        cmd="$(grep "${post_args[@]}" "${last_hist}" | sed "s/^ ${cmd_num}:/ /")"
 
         [[ $run_cmd == 1 ]] && { sh -c  "$cmd" ; return $?; } || echo "$cmd"
     else
         last_hist="${HOME}/.hist/$$/hist.txt"
         echo "${last_hist}" > ${HOME}/.hist/$$/last.txt
-        /bin/ls -tr ${HOME}/.history/bash-history-* | xargs -L 65535 ${grep_cmd} ${grep_flags} ${grep_str} | $format_time | tee "${last_hist}"
+        echo format_time = "${format_time}"
+        /bin/ls -tr ${HOME}/.history/bash-history-* | xargs -L 65535 ${grep_cmd} ${grep_flags} ${grep_str} | sed ${format_time} | ${_epoch_cmd} | tee "${last_hist}"
     fi
 }
 
@@ -99,6 +104,5 @@ fixhist()
         sudo find "${HOME}/.history" -type f -print0 | sudo xargs -0 chmod 644 && \
             sudo chmod 700 "${HOME}/.history"
 }
-
 
 # vim:ft=sh:sts=4:ts=4
