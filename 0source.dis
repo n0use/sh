@@ -1,0 +1,24 @@
+# This file is sourced by bash for login shells.  The following line
+
+function _do_source()
+{
+    test -r "${HOME}/.bashrc"  && source "${HOME}/.bashrc"
+    test -r "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+    test -r "/usr/local/etc/profile.d/bash_completion.sh" && source "/usr/local/etc/profile.d/bash_completion.sh"
+}
+
+function __init()
+{
+    local _resource_file="${HOME}/sh/0source"
+    test -r "${_resource_file}" || { echo "fix your _resource_file ($_resource_file) setting..."; return 1; }
+    local _resource_mtime="$(stat -f %m ${_resource_file})"
+    
+    test -z $_RESOURCE && _RESOURCE=0
+
+if (($_resource_mtime > $_RESOURCE)) ; then
+    _RESOURCE=$_resource_mtime 
+    _do_source
+fi
+}
+
+
